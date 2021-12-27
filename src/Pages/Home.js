@@ -3,6 +3,21 @@ import { useEffect, useState } from 'react';
 import { useIdleTimer } from 'react-idle-timer';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
+import { v4 as uuidv4 } from 'uuid';
+
+/*
+
+    [ Session Storage 특징 ]
+
+      - 새로운 탭에서 페이지를 열면 cookie 작동 방식과는 다른 최상위 레벨의 탐색 컨텍스트 값으로 새 세션이 시작
+
+      - 탭 브라우징이나 브라우저를 하나 더 실행해서 같은 페이지를 실행했을 때 각각의 sessionStorage가 생성 (이 두 페이지의 SessionStorage는 각각 별개의 영역으로 서로 침범하지 못한다)
+
+      - 윈도우를 종료하거나 브라우저를 닫으면 데이터가 자동 삭제
+
+      * 브라우저가 열려있고 페이지를 refresh하거나 복원했을 때는 삭제되지 않음
+
+ */
 
 const Home = () => {
   const timeout = 30000; // timeout 30초
@@ -32,21 +47,27 @@ const Home = () => {
   const handlePause = () => pause();
   const handleResume = () => resume();
 
-  // 컴포넌트가 렌더링 된 후 useEffect 실행
+  /** 컴포넌트가 렌더링 된 후 useEffect 실행 **/
+
+  // 남은 시간, 마지막 활동 시간 set
   useEffect(() => {
     setRemaining(getRemainingTime()); // 남은 시간 set
     setLastActive(getLastActiveTime()); // 마지막 활동 시간 set
+
+    sessionStorage.setItem('token', uuidv4()); // sessionStorage에 key , value값 set  / key : token, value: uuidv4()
 
     // 1초마다 남은시간, 마지막 활동 시간을 set한다.
     setInterval(() => {
       setRemaining(getRemainingTime());
       setLastActive(getLastActiveTime());
     }, 1000);
-  }, [getRemainingTime, getLastActiveTime]); // getRemainingTime, getLastActiveTime 의존성 주입
+  }, []);
 
   // TimeOut 페이지로 이동
   useEffect(() => {
     if (isIdle && remaining.toString() === '0') {
+      sessionStorage.clear(); // sessionStorage 값 삭제
+
       // isIdle 이 true고 남은시간이 0 일 때
       navigate('/TimeOut', { state: { sessionTimeOut: true } }); // TimeOut 페이지로 이동.
     }

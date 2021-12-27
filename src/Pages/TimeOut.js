@@ -34,7 +34,7 @@ const TimeOut = (props) => {
   let navigate = useNavigate();
 
   useEffect(() => {
-    setTimeOut(sessionTimeOut); // timeout값 set 타임아웃되어 페이지 이동한 경우 true값이 넘어온다.
+    setTimeOut(sessionTimeOut); // timeout값 set ,  타임아웃되어 페이지 이동한 경우 true값이 넘어온다.
 
     // timeOut 이 true이면 동작
     if (timeOut) {
