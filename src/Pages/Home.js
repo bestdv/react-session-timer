@@ -65,13 +65,13 @@ const Home = () => {
 
   // TimeOut 페이지로 이동
   useEffect(() => {
-    if (isIdle && remaining.toString() === '0') {
+    if (isIdle && getRemainingTime() === 0) {
       sessionStorage.clear(); // sessionStorage 값 삭제
 
       // isIdle 이 true고 남은시간이 0 일 때
       navigate('/TimeOut', { state: { sessionTimeOut: true } }); // TimeOut 페이지로 이동.
     }
-  }, [isIdle, navigate, remaining]); // isIdle, navigate, remaining 의존성 주입
+  }, [isIdle, getRemainingTime()]); // isIdle, navigate 의존성 주입
 
   return (
     <>
